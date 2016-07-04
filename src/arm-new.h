@@ -1682,7 +1682,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
 
     }
@@ -1708,7 +1708,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2759,7 +2759,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2784,7 +2784,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2814,7 +2814,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2840,7 +2840,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2869,7 +2869,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2898,7 +2898,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2927,7 +2927,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2956,7 +2956,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
       clockTicks += codeTicksAccess32(armNextPC) + 1;
     }
     break;
@@ -2988,7 +2988,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
     }
     break;
   case 0x0f9:
@@ -3019,7 +3019,7 @@ if(cond_res) {
       else
         clockTicks += 3;
       if (!busPrefetchCount)
-        busPrefetchCount = ((++busPrefetchCount)<<clockTicks) - 1;
+        busPrefetchCount = ((busPrefetchCount + busPrefetchCount)<<clockTicks) - 1;
     }
     break;
     LOGICAL_DATA_OPCODE(OP_TST, OP_TST, 0x110);
