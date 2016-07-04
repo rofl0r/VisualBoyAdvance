@@ -1075,9 +1075,6 @@ void elfParseCFA(u8 *top)
     data += 4;
     
     if(id == 0xffffffff) {
-      // skip version
-      *data++;
-
       ELFcie *cie = (ELFcie *)calloc(1, sizeof(ELFcie));
 
       cie->next = cies;
