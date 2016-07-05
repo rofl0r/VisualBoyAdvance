@@ -2236,10 +2236,10 @@ void gbReset()
       
   // clean LineBuffer
   if (gbLineBuffer != NULL)
-    memset(gbLineBuffer, 0, sizeof(gbLineBuffer));
+    memset(gbLineBuffer, 0, sizeof(*gbLineBuffer));
   // clean Pix
   if (pix != NULL)
-    memset(pix, 0, sizeof(pix));
+    memset(pix, 0, sizeof(*pix));
   // clean Vram
   if (gbVram != NULL)
     memset(gbVram, 0, 0x4000);
@@ -3398,8 +3398,6 @@ bool gbReadGSASnapshot(const char *fileName)
     return false;
   }
   fseek(file, 0x13, SEEK_SET);
-  size_t read = 0;
-  int toRead = 0;
   switch(gbRomType) {
   case 0x03:
   case 0x0f:
@@ -3407,15 +3405,7 @@ bool gbReadGSASnapshot(const char *fileName)
   case 0x13:
   case 0x1b:
   case 0x1e:
-  case 0xff:
-    read = fread(gbRam, 1, (gbRamSizeMask+1), file);
-    toRead = (gbRamSizeMask+1);
-    break;
   case 0x06:
-  case 0x22:
-    read = fread(&gbMemory[0xa000],1,256,file);
-    toRead = 256;
-    break;
   default:
     systemMessage(MSG_UNSUPPORTED_SNAPSHOT_FILE,
                   N_("Unsupported snapshot file %s"),
@@ -4774,8 +4764,6 @@ void gbEmulate(int ticksToStop)
                     tempgbWindowLine = 146;
                   }
  
-                  int wy = inUseRegister_WY;
-      
                   if(register_LY >= inUseRegister_WY) {
 
                     if (tempgbWindowLine == -1)
