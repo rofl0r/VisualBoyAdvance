@@ -343,7 +343,7 @@ void gbSoundEvent(register u16 address, register int data)
       sound4On = 0;
       gbMemory[address] &= 0xf0;
     }
-    gbMemory[address] = data & 0x80 | 0x70 | (gbMemory[address] & 0xf);
+    gbMemory[address] = data & (0x80 | 0x70 | (gbMemory[address] & 0xf));
     break;
   }
 
