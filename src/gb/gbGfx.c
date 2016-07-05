@@ -583,10 +583,12 @@ void gbDrawSprites(bool draw)
           {
             for (int j = x-8; j<300; j++)
               if (j>=0)
+                {
                 if (gbSpeed)
                   gbSpritesTicks[j] += 5;
                 else
                   gbSpritesTicks[j] += 2+(count&1);
+                }
 
           }
           count++;
