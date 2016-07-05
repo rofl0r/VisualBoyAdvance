@@ -121,7 +121,6 @@ static void debuggerPrint(int, char **);
 static void debuggerQuit(int, char **);
 static void debuggerSetRadix(int, char **);
 static void debuggerSymbols(int, char **);
-static void debuggerVerbose(int, char **);
 static void debuggerWhere(int, char **);
 
 static void debuggerReadState(int, char **);
@@ -749,17 +748,6 @@ static void debuggerDebug(int n, char **args)
     printf("Debug level set to %d\n", systemDebug);
   } else
     debuggerUsage("trace");      
-}
-
-static void debuggerVerbose(int n, char **args)
-{
-  if(n == 2) {
-    int v = 0;
-    sscanf(args[1], "%d", &v);
-    systemVerbose = v;
-    printf("Verbose level set to %d\n", systemVerbose);
-  } else
-    debuggerUsage("verbose");    
 }
 
 static void debuggerWhere(int n, char **args)
@@ -2245,7 +2233,7 @@ static void debuggerCondValidate(int n,char **args,int start)
   char *address=args[start];
   char *op=args[start+1];
   char *value=args[start+2];
-  char *tsize,*taddress,*tvalue;
+  char *taddress,*tvalue;
 
   int rel=0;
   
@@ -2262,20 +2250,6 @@ static void debuggerCondValidate(int n,char **args,int start)
       return;
     }
     
-    switch(size) {
-    case 'b':
-      debuggerBreakpointList[i].cond_size=1;
-      tsize="byte";
-      break;
-    case 'h':
-      debuggerBreakpointList[i].cond_size=2;
-      tsize="halfword";
-      break;
-    case 'w':
-      debuggerBreakpointList[i].cond_size=4;
-      tsize="word";
-      break;
-    }
   }
 
   switch(toupper(address[0])) {
