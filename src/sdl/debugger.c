@@ -750,6 +750,19 @@ static void debuggerDebug(int n, char **args)
     debuggerUsage("trace");      
 }
 
+#ifdef DEV_VERSION
+static void debuggerVerbose(int n, char **args)
+{
+  if(n == 2) {
+    int v = 0;
+    sscanf(args[1], "%d", &v);
+    systemVerbose = v;
+    printf("Verbose level set to %d\n", systemVerbose);
+  } else
+    debuggerUsage("verbose");    
+}
+#endif
+
 static void debuggerWhere(int n, char **args)
 {
   void elfPrintCallChain(u32);
