@@ -1610,13 +1610,13 @@ u8 gbReadOpcode(register u16 address)
   if(address < 0xa000)
   {
     // A lot of 'ugly' checks... But only way to emulate this particular behaviour...
-    if (((gbHardware & 0xa) && ((gbLcdModeDelayed !=3) || ((register_LY == 0) &&
-        (gbScreenOn==false) && (register_LCDC & 0x80)) &&
-        (gbLcdLYIncrementTicksDelayed ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS)))) || 
+    if ((((gbHardware & 0xa) && ((gbLcdModeDelayed !=3) || ((register_LY == 0) &&
+        (gbScreenOn==false) && (register_LCDC & 0x80))) &&
+        ((gbLcdLYIncrementTicksDelayed ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS)))) || 
         ((gbHardware & 0x5) && (gbLcdModeDelayed !=3) &&
         ((gbLcdMode !=3) ||   ((register_LY == 0) && ((gbScreenOn==false) &&
         (register_LCDC & 0x80)) &&
-        (gbLcdLYIncrementTicks ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS))))))
+        (gbLcdLYIncrementTicks ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS)))))))
       return gbMemoryMap[address>>12][address&0x0fff];
     return 0xff;
   }
@@ -1661,7 +1661,7 @@ u8 gbReadOpcode(register u16 address)
       case 0x41:
       // This is a GB/C only bug (ie. not GBA/SP).
       if ((gbHardware & 7) && (gbLcdMode == 2) && (gbLcdModeDelayed == 1) && (!gbSpeed))
-        return (0x80 | gbMemory[0xff41] & 0xFC);
+        return ((0x80 | gbMemory[0xff41]) & 0xFC);
       else
         return (0x80 | gbMemory[0xff41]);
       case 0x42:
@@ -1760,13 +1760,13 @@ u8 gbReadMemory(register u16 address)
   if(address < 0xa000)
   {
     // A lot of 'ugly' checks... But only way to emulate this particular behaviour...
-    if (((gbHardware & 0xa) && ((gbLcdModeDelayed !=3) || ((register_LY == 0) &&
-        (gbScreenOn==false) && (register_LCDC & 0x80)) &&
-        (gbLcdLYIncrementTicksDelayed ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS)))) || 
+    if ((((gbHardware & 0xa) && ((gbLcdModeDelayed !=3) || ((register_LY == 0) &&
+        (gbScreenOn==false) && (register_LCDC & 0x80))) &&
+        ((gbLcdLYIncrementTicksDelayed ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS)))) || 
         ((gbHardware & 0x5) && (gbLcdModeDelayed !=3) &&
         ((gbLcdMode !=3) ||   ((register_LY == 0) && ((gbScreenOn==false) &&
         (register_LCDC & 0x80)) &&
-        (gbLcdLYIncrementTicks ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS))))))
+        (gbLcdLYIncrementTicks ==(GBLY_INCREMENT_CLOCK_TICKS-GBLCD_MODE_2_CLOCK_TICKS)))))))
       return gbMemoryMap[address>>12][address&0x0fff];
     return 0xff;
   }
@@ -1921,7 +1921,7 @@ u8 gbReadMemory(register u16 address)
     case 0x41:
       // This is a GB/C only bug (ie. not GBA/SP).
       if ((gbHardware & 7) && (gbLcdMode == 2) && (gbLcdModeDelayed == 1) && (!gbSpeed))
-        return (0x80 | gbMemory[0xff41] & 0xFC);
+        return ((0x80 | gbMemory[0xff41]) & 0xFC);
       else
         return (0x80 | gbMemory[0xff41]);
     case 0x42:
@@ -1987,8 +1987,8 @@ u8 gbReadMemory(register u16 address)
   // OAM not accessible during mode 2 & 3.
   if(((address >= 0xfe00) && (address<0xfea0)) &&
     (((gbLcdMode | gbLcdModeDelayed) &2) &&
-    (!(gbSpeed && (gbHardware & 0x2) && !(gbLcdModeDelayed & 2) && (gbLcdMode == 2))) ||
-      (gbSpeed && (gbHardware & 0x2) && (gbLcdModeDelayed == 0) && (gbLcdTicksDelayed == (GBLCD_MODE_0_CLOCK_TICKS-gbSpritesTicks[299])))))
+    ((!(gbSpeed && (gbHardware & 0x2) && !(gbLcdModeDelayed & 2) && (gbLcdMode == 2))) ||
+      (gbSpeed && (gbHardware & 0x2) && (gbLcdModeDelayed == 0) && (gbLcdTicksDelayed == (GBLCD_MODE_0_CLOCK_TICKS-gbSpritesTicks[299]))))))
   return 0xff;
 
   if ((address >= 0xfea0) && (address < 0xff00))
@@ -2236,10 +2236,10 @@ void gbReset()
       
   // clean LineBuffer
   if (gbLineBuffer != NULL)
-    memset(gbLineBuffer, 0, sizeof(gbLineBuffer));
+    memset(gbLineBuffer, 0, sizeof(*gbLineBuffer));
   // clean Pix
   if (pix != NULL)
-    memset(pix, 0, sizeof(pix));
+    memset(pix, 0, sizeof(*pix));
   // clean Vram
   if (gbVram != NULL)
     memset(gbVram, 0, 0x4000);
@@ -3398,8 +3398,6 @@ bool gbReadGSASnapshot(const char *fileName)
     return false;
   }
   fseek(file, 0x13, SEEK_SET);
-  size_t read = 0;
-  int toRead = 0;
   switch(gbRomType) {
   case 0x03:
   case 0x0f:
@@ -3407,15 +3405,7 @@ bool gbReadGSASnapshot(const char *fileName)
   case 0x13:
   case 0x1b:
   case 0x1e:
-  case 0xff:
-    read = fread(gbRam, 1, (gbRamSizeMask+1), file);
-    toRead = (gbRamSizeMask+1);
-    break;
   case 0x06:
-  case 0x22:
-    read = fread(&gbMemory[0xa000],1,256,file);
-    toRead = 256;
-    break;
   default:
     systemMessage(MSG_UNSUPPORTED_SNAPSHOT_FILE,
                   N_("Unsupported snapshot file %s"),
@@ -4774,8 +4764,6 @@ void gbEmulate(int ticksToStop)
                     tempgbWindowLine = 146;
                   }
  
-                  int wy = inUseRegister_WY;
-      
                   if(register_LY >= inUseRegister_WY) {
 
                     if (tempgbWindowLine == -1)

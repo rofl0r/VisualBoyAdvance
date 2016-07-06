@@ -1428,7 +1428,7 @@ void sdlPollEvents()
               soundPause();
           }
           
-          memset(delta,255,sizeof(delta));
+          memset(delta,255,sizeof(*delta));
         }
       }
       break;
@@ -2419,12 +2419,8 @@ void systemDrawScreen()
     u8 *src = pix;
     u8 *dest = (u8*)surface->pixels;
     int i;
-    u32 *stretcher = (u32 *)sdlStretcher;
     if(systemColorDepth == 16)
       src += srcPitch;
-    int option = sizeOption;
-    if(yuv)
-      option = 0;
     switch(sizeOption) {
     case 0:
       for(i = 0; i < srcHeight; i++) {

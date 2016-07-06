@@ -135,7 +135,6 @@
 #define DW_LNS_advance_pc       0x02
 #define DW_LNS_advance_line     0x03
 #define DW_LNS_set_file         0x04
-#define DW_LNS_set_column       0x05
 #define DW_LNS_negate_stmt      0x06
 #define DW_LNS_set_basic_block  0x07
 #define DW_LNS_const_add_pc     0x08
@@ -1075,9 +1074,6 @@ void elfParseCFA(u8 *top)
     data += 4;
     
     if(id == 0xffffffff) {
-      // skip version
-      *data++;
-
       ELFcie *cie = (ELFcie *)calloc(1, sizeof(ELFcie));
 
       cie->next = cies;
@@ -1229,9 +1225,7 @@ void elfParseLineInfo(CompileUnit *unit, u8 *top)
     u32 address = 0;
     int file = 1;
     int line = 1;
-    int col = 0;
     int isStmt = defaultIsStmt;
-    int basicBlock = 0;
     int endSeq = 0;
 
     while(!endSeq) {
@@ -1258,7 +1252,6 @@ void elfParseLineInfo(CompileUnit *unit, u8 *top)
       case DW_LNS_copy:
         //      fprintf(stderr, "Address %08x line %d (%d)\n", address, line, file);
         elfAddLine(l, address, file, line, &max);
-        basicBlock = 0;
         break;
       case DW_LNS_advance_pc:
         address += minInstrSize * elfReadLEB128(data, &bytes);
@@ -1272,15 +1265,8 @@ void elfParseLineInfo(CompileUnit *unit, u8 *top)
         file = elfReadLEB128(data, &bytes);
         data += bytes;
         break;
-      case DW_LNS_set_column:
-        col = elfReadLEB128(data, &bytes);
-        data += bytes;
-        break;
       case DW_LNS_negate_stmt:
         isStmt = !isStmt;
-        break;
-      case DW_LNS_set_basic_block:
-        basicBlock = 1;
         break;
       case DW_LNS_const_add_pc:
         address += (minInstrSize *((255 - opcodeBase)/lineRange));
@@ -1295,7 +1281,6 @@ void elfParseLineInfo(CompileUnit *unit, u8 *top)
         line += lineBase + (op % lineRange);
         elfAddLine(l, address, file, line, &max);        
         //        fprintf(stderr, "Address %08x line %d (%d)\n", address, line,file);
-        basicBlock = 1;
         break;
       }
     }
@@ -2012,7 +1997,6 @@ u8 *elfParseBlock(u8 *data, ELFAbbrev *abbrev, CompileUnit *unit,
 {
   int bytes;
   u32 start = func->lowPC;
-  u32 end = func->highPC;
   
   for(int i = 0; i < abbrev->numAttrs; i++) {
     ELFAttr *attr = &abbrev->attrs[i];
@@ -2022,9 +2006,6 @@ u8 *elfParseBlock(u8 *data, ELFAbbrev *abbrev, CompileUnit *unit,
       break;
     case DW_AT_low_pc:
       start = attr->value;
-      break;
-    case DW_AT_high_pc:
-      end = attr->value;
       break;
     case DW_AT_ranges: // ignore for now
       break;
@@ -2180,7 +2161,6 @@ u8 *elfParseFunction(u8 *data, ELFAbbrev *abbrev, CompileUnit *unit,
   *f = func;
    
   int bytes;
-  bool mangled = false;
   bool declaration = false;
   for(int i = 0; i < abbrev->numAttrs; i++) {
     ELFAttr *attr = &abbrev->attrs[i];
@@ -2194,7 +2174,6 @@ u8 *elfParseFunction(u8 *data, ELFAbbrev *abbrev, CompileUnit *unit,
       break;
     case DW_AT_MIPS_linkage_name:
       func->name = attr->string;
-      mangled = true;
       break;
     case DW_AT_low_pc:
       func->lowPC = attr->value;
