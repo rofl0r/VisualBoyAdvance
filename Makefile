@@ -15,6 +15,9 @@ VBAOBJS=$(VBASRCS:.c=.o)
 TESTEMUSRCS=$(MAINSRCS) $(GBSRCS) $(SDLSRCS) src/sdl/TestEmu.c
 TESTEMUOBJS=$(TESTEMUSRCS:.c=.o)
 
+SRCS=$(MAINSRCS) $(GBSRCS) $(SDLSRCS) src/sdl/SDL.c src/sdl/TestEmu.c
+OBJS=$(SRCS:.c=.o)
+
 LEX=flex
 
 -include config.mak
@@ -41,7 +44,7 @@ TestEmu: $(TESTEMUOBJS)
 clean:
 	rm -f $(GENSRCS)
 	rm -f $(PROGS)
-	rm -f $(VBAOBJS)
+	rm -f $(OBJS)
 
 %.o: %.c
 	$(C99) $(CPPFLAGS) $(CFLAGS) $(INC) -c -o $@ $<
